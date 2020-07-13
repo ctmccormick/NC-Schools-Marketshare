@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8" name="google" content="notranslate" />
+    {% block title %}<title>Cameron McCormick Home Page</title>{% endblock title %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+    <body>
+        <div class="sidenav">
+            <center>
+            <img class="profile_pic" src="{{ url_for('static', filename='0.jpeg') }}">
+            </center>
+            <br><br>
+            <a href="https://cameronmccormick.pythonanywhere.com">Home</a>
+            <br>
+            <a href="https://ncschools.pythonanywhere.com/districts">NC Schools Marketshare</a>
+            <br>
+            <a href="https://improvnewsletter.pythonanywhere.com/newsletter">Comedian Newsletter</a>
+        </div>
+
+
+        <div>
+            {% block map %}
+            {% endblock %}
+        </div>
+
+        <div>
+            {% block pass_links_list %}
+            {% endblock %}
+        </div>
+
+
+        <div>
+            {% block profile_data %}
+            {% endblock %}
+        </div>
+
+        <div>
+            {% block homeschools %}
+            {% endblock %}
+        </div>
+
+    </body>
+
+</html>

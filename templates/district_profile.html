@@ -1,0 +1,133 @@
+{% extends "base_page.html" %}
+
+{% block title %}
+<title>{{ lea.split(' ')[0] }} District Profile</title>
+{% endblock title %}
+
+{% block profile_data %}
+<body>
+        <div class='title'>
+            <br>
+            School District Profile
+            <br>
+            <span style="font-size: 40px">{{ lea }}</span>
+        </div>
+
+        <br>
+        <br>
+
+        <div class='adm'>
+            <strong>ADM</strong>
+            <br>
+            2018-19 ADM: {{ "{:,.0f}".format(profile_data['leas'][lea]['adm']) }}
+            <br>
+            2017-18 Needy Percent: {{ "{:.2f}".format(profile_data['leas'][lea]['needy'] * 100) }}%
+            <br>
+        </div>
+
+        <br>
+        <br>
+
+        <div class='num_schools'>
+            <strong>Market Share</strong>
+            <br>
+            LEA Schools: {{ profile_data['leas'][lea]['pub_schools'] }}
+            <br>
+
+            {% if lea in parent_leas %}
+                {% set parent = parent_leas[lea] %}
+                {% set parent_name = parent_leas[lea].split(" ")[0] %}
+
+                Charter Schools (2018-19): {{ profile_data['leas'][parent]['num_charter_schools'] }} <em>({{ parent_name }})</em>
+                 <em>{{ profile_data['leas'][parent]['names_charter_schools'] }}</em>
+                <br>
+                Private Schools (2018-19): {{ profile_data['leas'][parent]['private_schools'] }} <em>({{ parent_name }})</em>
+                <br>
+                Homeschools (2018-19): {{ profile_data['leas'][parent]['homeschools'] }} <em>({{ parent_name }})</em>
+            {% else %}
+                Charter Schools (2018-19): {{ profile_data['leas'][lea]['num_charter_schools'] }}
+                 <em>{{ profile_data['leas'][lea]['names_charter_schools'] }}</em>
+                <br>
+                Private Schools (2018-19): {{ profile_data['leas'][lea]['private_schools'] }}
+                <br>
+                Homeschools (2018-19): {{ profile_data['leas'][lea]['homeschools'] }}
+            {% endif %}
+
+            <br>
+            {% if lea in tableau_links %}
+                <a href="http://ncschools.pythonanywhere.com/homeschools/tipdistricts/{{ lea }}">
+                Home Schools Interactive Dashboard</a>
+            {% endif %}
+            <br>
+            <br>
+        </div>
+
+
+        <div>
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th class="left">School Year</th>
+                        <th class="left">LEA Name</th>
+                        <th>Total<br>ADM</th>
+                        <th>ADM<br>% of Total</th>
+                        <th>Charter School<br>Enrollment</th>
+                        <th>Charter<br>% of Total</th>
+                        <th>Private School<br>Enrollment</th>
+                        <th>Private<br>% of Total</th>
+                        <th>Homeschool<br>Enrollment</th>
+                        <th>Homeschool<br>% of Total</th>
+                        <th>Total<br>Enrollment</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {% for df in dfs %}
+                    {% for i, row in df.iterrows() %}
+                        {% if row['lea_name'] == 'State' %}
+                            <tr class="state" rowspan=2>
+                                <td class="left-border">{{ row['school_year'] }}</td>
+                                <td class="name">{{ row['lea_name'] }}</td>
+                                <td>{{ "{:,.0f}".format(row['total_adm']) }}</td>
+                                <td class="right-border">{{ "{:.1f}".format(row['adm_pct']) }}%</td>
+                                <td>{{ "{:,.0f}".format(row['charter_enrollment']) }}</td>
+                                <td class="right-border">{{ "{:.1f}".format(row['charter_pct']) }}%</td>
+                                <td>{{ "{:,.0f}".format(row['private_enrollment']) }}</td>
+                                <td class="right-border">{{ "{:.1f}".format(row['private_pct']) }}%</td>
+                                <td>{{ "{:,.0f}".format(row['home_enrollment']) }}</td>
+                                <td class="right-border">{{ "{:.1f}".format(row['home_pct']) }}%</td>
+                                <td class="right-border">{{ "{:,.0f}".format(row['total_enrollment']) }}</td>
+                            </tr>
+                        {% else %}
+                            <tr class="data">
+                                <td class="left-border"></td>
+                                <td class="name">{{ row['lea_name'] }}</td>
+                                <td>{{ "{:,.0f}".format(row['total_adm']) }}</td>
+                                <td class="right-border">{{ "{:.1f}".format(row['adm_pct']) }}%</td>
+                                <td>{{ "{:,.0f}".format(row['charter_enrollment']) }}</td>
+                                <td class="right-border">{{ "{:.1f}".format(row['charter_pct']) }}%</td>
+                                {% if row['private_enrollment'] != '-' %}
+                                    <td>{{ "{:,.0f}".format(row['private_enrollment']) }}</td>
+                                    <td class="right-border">{{ "{:.1f}".format(row['private_pct']) }}%</td>
+                                {% else %}
+                                    <td>-</td>
+                                    <td class="right-border">-</td>
+                                {% endif %}
+
+                                {% if row['home_enrollment'] != '-' %}
+                                    <td>{{ "{:,.0f}".format(row['home_enrollment']) }}</td>
+                                    <td class="right-border">{{ "{:.1f}".format(row['home_pct']) }}%</td>
+                                {% else %}
+                                    <td>-</td>
+                                    <td class="right-border">-</td>
+                                {% endif %}
+                                <td class="right-border">{{ "{:,.0f}".format(row['total_enrollment']) }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+</body>
+{% endblock %}
